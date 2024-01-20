@@ -1,25 +1,47 @@
 // EventList.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, Alert, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { collection, getDocs } from "firebase/firestore";
+import {db} from './firebase.js';
 
 // ... other imports and rest of your code for EventList component
-const events = [
-    {
-      id: '1',
-      title: 'Pottery Workshop at F House with Complimentary drinks',
-      dateTime: 'Wednesday, Jan 17 2024 at 13:00',
-      location: 'F House, Hyderabad',
-      price: '₹1400 per person',
-      image: './path-to-your-image.png', // Replace with actual image path or URL
-      description: 'Join us for a fun pottery workshop...',
-      // Add more details that you will pass to the EventDetails screen
-    },
-    // ... more events
-  ];
+// const events = [
+//     {
+//       id: '1',
+//       title: 'Pottery Workshop at F House with Complimentary drinks',
+//       dateTime: 'Wednesday, Jan 17 2024 at 13:00',
+//       location: 'F House, Hyderabad',
+//       price: '₹1400 per person',
+//       image: './path-to-your-image.png', // Replace with actual image path or URL
+//       description: 'Join us for a fun pottery workshop...',
+//       // Add more details that you will pass to the EventDetails screen
+//     },
+//     // ... more events
+//   ];
 
 const EventList = () => {
+
+
+  const [events, setEvents] = useState([]);
+  const fetchEvents = async () => {
+         
+    await getDocs(collection(db, "events"))
+        .then((querySnapshot)=>{               
+            const newData = querySnapshot.docs
+                .map((doc) => ({id:doc.data().id, charges:doc.data().charges, event_desc_images: doc.data().event_desc_images, location:doc.data().location_name , name:doc.data().name, image:doc.data().main_image, event_date_time:doc.data().event_date_time.toDate().toISOString(), description:doc.data().description }));
+            console.log(newData)
+            setEvents(newData);                
+            console.log(events, newData);
+        })
+   
+  }
+  
+  useEffect(()=>{
+    fetchEvents();
+  }, [])
+
   const navigation = useNavigation();
 
   const navigateToEventDetails = (event) => {
@@ -64,12 +86,12 @@ const EventList = () => {
   // ... rest of your EventList component
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() => navigateToEventDetails(item)}>
-      <Image source={item.image} style={styles.image} />
+       <Image source={{uri:item.image}} style={styles.image} />
       <View style={styles.info}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.dateTime}>{item.dateTime}</Text>
+        <Text style={styles.title}>{item.name}</Text>
+        <Text style={styles.dateTime}>{item.event_date_time}</Text>
         <Text style={styles.location}>{item.location}</Text>
-        <Text style={styles.price}>{item.price}</Text>
+        <Text style={styles.price}>₹{item.charges} per person</Text>
       </View>
     </TouchableOpacity>
   );

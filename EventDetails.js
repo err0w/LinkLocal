@@ -9,12 +9,12 @@ const EventDetails = ({ route }) => {
   const navigation = useNavigation();
   return (
     <ScrollView style={styles.container}>
-      <Image source={event.image} style={styles.image} />
+       <Image source={{uri:event.image}} style={styles.image} />
       <View style={styles.detailsContainer}>
-        <Text style={styles.title}>{event.title}</Text>
-        <Text style={styles.dateTime}>{event.dateTime}</Text>
+        <Text style={styles.title}>{event.name}</Text>
+        <Text style={styles.dateTime}>{event.event_date_time}</Text>
         <Text style={styles.location}>{event.location}</Text>
-        <Text style={styles.price}>{event.price}</Text>
+        <Text style={styles.price}>₹{event.charges} per person</Text>
         <Text style={styles.description}>{event.description}</Text>
         {/* Render additional details like why attend etc. */}
       </View>
@@ -22,7 +22,6 @@ const EventDetails = ({ route }) => {
         {/* Render previous events, if any */}
       </View>
       <View style={styles.priceContainer}>
-        <Text style={styles.price}>{event.price} per person</Text>
         <Button title="Attend" onPress={() => navigation.navigate('ConfirmationScreen')} />
       </View>
     </ScrollView>
