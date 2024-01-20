@@ -1,11 +1,12 @@
 // EventDetails.js
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, Button } from 'react-native';
 
 const EventDetails = ({ route }) => {
   // Assuming route.params contains the event details passed from the event list item
   const { event } = route.params;
-
+  const navigation = useNavigation();
   return (
     <ScrollView style={styles.container}>
       <Image source={event.image} style={styles.image} />
@@ -22,7 +23,7 @@ const EventDetails = ({ route }) => {
       </View>
       <View style={styles.priceContainer}>
         <Text style={styles.price}>{event.price} per person</Text>
-        <Button title="Attend" onPress={() => { /* Handle the attend action */ }} />
+        <Button title="Attend" onPress={() => navigation.navigate('ConfirmationScreen')} />
       </View>
     </ScrollView>
   );

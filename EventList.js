@@ -21,7 +21,7 @@ import {db} from './firebase.js';
 
 const EventList = () => {
 
-  const [events, setEvents] = useState([]);
+const [events, setEvents] = useState([]);
 
 const fetchEvents = async () => {
        
