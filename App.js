@@ -36,7 +36,9 @@ const App = () => {
     if (isAuthenticated) {
       return (
         <>
-          <Stack.Screen name="EventList" component={EventList} />
+          <Stack.Screen name="EventList"> 
+            {props => <EventList {...props} setIsAuthenticated ={setIsAuthenticated}/>}
+          </Stack.Screen>
           <Stack.Screen name="EventDetails" component={EventDetails} />
           <Stack.Screen name="ConfirmationScreen" component={ConfirmationScreen} />
         </>

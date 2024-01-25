@@ -6,20 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { collection, getDocs } from "firebase/firestore";
 import {db} from './firebase.js';
 
-// ... other imports and rest of your code for EventList component
-// const events = [
-//     {
-//       id: '1',
-//       title: 'Pottery Workshop at F House with Complimentary drinks',
-//       dateTime: 'Wednesday, Jan 17 2024 at 13:00',
-//       location: 'F House, Hyderabad',
-//       price: '₹1400 per person',
-//       image: './path-to-your-image.png', // Replace with actual image path or URL
-//       description: 'Join us for a fun pottery workshop...',
-//       // Add more details that you will pass to the EventDetails screen
-//     },
-//     // ... more events
-//   ];
+
 
 const EventList = () => {
 
@@ -73,13 +60,14 @@ const EventList = () => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('userToken');
-      // Reset the navigation state to the new route
+      // Reset the navigation state to the new ro*ute
       navigation.reset({
         index: 0,
         routes: [{ name: 'PhoneNumberInputScreen' }],
       });
     } catch (e) {
       // handling exception
+      console.log(e)
     }
   };
 
@@ -98,6 +86,7 @@ const EventList = () => {
 
   return (
     <FlatList
+      style = {styles.eventList}
       data={events}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
@@ -106,15 +95,21 @@ const EventList = () => {
 };
 
 const styles = StyleSheet.create({
+    eventList: {
+      backgroundColor: 'white'
+    },
     card: {
         flexDirection: 'row',
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
+        padding: 8,
+        borderWidth: 1,
+        borderColor: '#D9D9D9',
+        margin: 4,
+        height: 100
       },
       image: {
-        width: 50,
-        height: 50,
+        width: 85,
+        height: 85,
+        borderRadius: 4
         // Adjust the image styling as needed
       },
       info: {
@@ -124,6 +119,7 @@ const styles = StyleSheet.create({
       title: {
         fontSize: 16,
         fontWeight: 'bold',
+        height: '50%'
       },
       dateTime: {
         fontSize: 14,
