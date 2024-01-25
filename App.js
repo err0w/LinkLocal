@@ -1,25 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
 import PhoneNumberInputScreen from './PhoneNumberInputScreen';
 import OTPInputScreen from './OTPInputScreen';
 import EventList from './EventList1';
 import EventDetails from './EventDetails';
 import ConfirmationScreen from './ConfirmationScreen';
+import app from './firebase.js'
 // ... other imports
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+ 
 
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
         const authToken = await AsyncStorage.getItem('userToken');
-        setIsAuthenticated(!!authToken);
+        const uid = await AsyncStorage.getItem('uid');
+        setIsAuthenticated(!!uid);
       } catch (e) {
         // handling exception
       }

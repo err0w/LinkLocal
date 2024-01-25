@@ -1,4 +1,3 @@
-// Import the functions you need from the SDKs you need
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -6,7 +5,7 @@ import "firebase/compat/firestore";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyAMY9ZbsGh8q72pQL7dhmlLGsu3PjrNsww",
   authDomain: "chalo-mile.firebaseapp.com",
   projectId: "chalo-mile",
@@ -17,5 +16,5 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+export const app = firebase.initializeApp(firebaseConfig);
 export const db = app.firestore();

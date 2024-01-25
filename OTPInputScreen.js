@@ -5,18 +5,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OTPInputScreen = ({ route, navigation, setIsAuthenticated }) => {
   const [otp, setOtp] = useState('');
-  const { phoneNumber } = route.params;
+  const { phoneNumber, confirm } = route.params;
 
   const handleVerifyOTP = async () => {
     // Normally, verify the OTP with your backend
     // For now, we'll assume the OTP is always '123456'
-    if (otp === '123456') {
-      await AsyncStorage.setItem('userToken', 'authenticated');
+    try{
+      const user = await confirm.confirm(otp);
+      console.log(user)
+      console.log(user["_tokenResponse"]["idToken"])
+      console.log(user["_tokenResponse"]["uid"])
+      await AsyncStorage.setItem('userToken',user["_tokenResponse"]["idToken"]);
+      await AsyncStorage.setItem('uid',user["user"]["uid"]);
       setIsAuthenticated(true);
       navigation.navigate('EventList');
-    } else {
-      alert('Incorrect OTP');
+    }catch(error){
+      console.log("incorrect otp")
+      console.log(error)
     }
+
+    // if (otp === '123456') {
+    //   await AsyncStorage.setItem('userToken', 'authenticated');
+    //   setIsAuthenticated(true);
+    //   navigation.navigate('EventList');
+    // } else {
+    //   alert('Incorrect OTP');
+    // }
   };
 
   const resendOTP = () => {
