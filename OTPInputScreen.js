@@ -13,8 +13,6 @@ const OTPInputScreen = ({ route, navigation, setIsAuthenticated }) => {
     try{
       const user = await confirm.confirm(otp);
       console.log(user)
-      console.log(user["_tokenResponse"]["idToken"])
-      console.log(user["_tokenResponse"]["uid"])
       await AsyncStorage.setItem('userToken',user["_tokenResponse"]["idToken"]);
       await AsyncStorage.setItem('uid',user["user"]["uid"]);
       setIsAuthenticated(true);
