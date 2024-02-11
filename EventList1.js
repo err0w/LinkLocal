@@ -4,6 +4,9 @@ import { View, FlatList, Alert, TouchableOpacity, Text, StyleSheet, Image } from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { collection, getDocs } from "firebase/firestore";
+import { truncateTitle, formatFirestoreTimestamp } from './util.js';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 import {db} from './firebase.js';
 
 
@@ -17,7 +20,7 @@ const EventList = () => {
     await getDocs(collection(db, "events"))
         .then((querySnapshot)=>{               
             const newData = querySnapshot.docs
-                .map((doc) => ({id:doc.data().id, charges:doc.data().charges, event_desc_images: doc.data().event_desc_images, location:doc.data().location_name , name:doc.data().name, image:doc.data().main_image, event_date_time:doc.data().event_date_time.toDate().toISOString(), description:doc.data().description }));
+                .map((doc) => ({id:doc.data().id, charges:doc.data().charges, event_desc_images: doc.data().event_desc_images, location:doc.data().location_name , name:doc.data().name, image:doc.data().main_image, event_date_time:formatFirestoreTimestamp(doc.data().event_date_time), description:doc.data().description }));
             console.log(newData)
             setEvents(newData);                
             console.log(events, newData);
@@ -72,17 +75,30 @@ const EventList = () => {
   };
 
   // ... rest of your EventList component
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }) => {
+    //truncating the title to accomodate various event titles
+    const title = truncateTitle(item.name, 2, 24)
+    
+    return(
     <TouchableOpacity style={styles.card} onPress={() => navigateToEventDetails(item)}>
        <Image source={{uri:item.image}} style={styles.image} />
       <View style={styles.info}>
-        <Text style={styles.title}>{item.name}</Text>
-        <Text style={styles.dateTime}>{item.event_date_time}</Text>
-        <Text style={styles.location}>{item.location}</Text>
-        <Text style={styles.price}>₹{item.charges} per person</Text>
+        <Text style={styles.title}>{title}</Text>
+        <View style={styles.locationContainer}>
+          <MaterialCommunityIcons name = 'map-marker' size={12} color='black'/> 
+          <Text style={styles.location}>{item.location}</Text>
+        </View>
+        <View style = {styles.locationContainer} >
+          <MaterialCommunityIcons name = 'calendar-clock' size={12} color = 'black' />
+          <Text style={styles.dateTime}>{item.event_date_time}</Text>
+        </View>
+        <View style = {styles.locationContainer} >
+          <MaterialCommunityIcons name = 'currency-inr' size={12} color = 'black'/>
+          <Text style={styles.price}>{item.charges} per person</Text>
+        </View>
       </View>
     </TouchableOpacity>
-  );
+  )};
 
   return (
     <FlatList
@@ -114,25 +130,34 @@ const styles = StyleSheet.create({
       },
       info: {
         flex: 1,
-        paddingLeft: 10,
+        paddingLeft: 8,
       },
       title: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        height: '50%'
-      },
-      dateTime: {
         fontSize: 14,
+        height: '40%'
+      },
+      
+      dateTime: {
+        marginLeft:4,
+        fontSize: 12,
       },
       location: {
-        fontSize: 14,
+        marginLeft:4,
+        marginTop:4,
+        fontSize: 12,
       },
       price: {
-        fontSize: 14,
+        marginLeft:4,
+        fontSize: 12,
       },
   headerButton: {
     padding: 10,
     fontSize: 18,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // Add any additional styling as needed
   },
 });
 

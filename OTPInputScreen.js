@@ -1,7 +1,9 @@
 // OTPInputScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 const OTPInputScreen = ({ route, navigation, setIsAuthenticated }) => {
   const [otp, setOtp] = useState('');
@@ -46,19 +48,45 @@ const OTPInputScreen = ({ route, navigation, setIsAuthenticated }) => {
         keyboardType="number-pad"
         maxLength={6} // OTP length
       />
-      <Button title="Submit OTP" onPress={handleVerifyOTP} />
-      <Button title="Change phone" onPress={() => navigation.goBack()} />
-      <Button title="Resend OTP" onPress={resendOTP} />
+      <View style = {styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => handleVerifyOTP()}>
+          <Text style={styles.buttonText}>Submit OTP</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => resendOTP()}>
+          <Text style={styles.buttonText}>Resend OTP</Text>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity style={{color: 'black', flexDirection: 'row', marginTop: 12}} onPress={() => navigation.goBack()}>
+        <MaterialCommunityIcons name='replay' size={24} color='black' /> 
+        <Text style={{margin: 2}}>Change Phone</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#0000ff', 
+    borderRadius: 4,
+    padding: 8,
+    alignItems: 'center',
+    margin: 8,
+  },
+  buttonText: {
+    color: 'white'
+  },
+  buttonContainer: {
+    flexDirection: 'row', // align children in a row (horizontal)
+    justifyContent: 'center', // center children horizontally in the container
+    alignItems: 'center', // center children vertically in the container
+  },
+
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: 'white'
   },
   input: {
     width: '100%',
