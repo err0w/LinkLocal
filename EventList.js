@@ -1,8 +1,10 @@
 // EventList.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { collection, getDocs } from "firebase/firestore";
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
 import {db} from './firebase.js';
 
 // const events = [
@@ -67,6 +69,16 @@ useEffect(()=>{
   );
 
 };
+
+const Drawer = createDrawerNavigator()
+const DrawerWithEventList = () =>{
+  return(
+    <NavigationContainer >
+      <Drawer.Screen name = "Events List" component={EventList}/>
+    </NavigationContainer>
+  )
+}
+
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
@@ -99,4 +111,5 @@ const styles = StyleSheet.create({
   // ... add more styles for your event cards
 });
 
-export default EventList;
+
+export default DrawerWithEventList;

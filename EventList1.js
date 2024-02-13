@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { collection, getDocs } from "firebase/firestore";
 import { truncateTitle, formatFirestoreTimestamp } from './util.js';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+// import { useNavigation } from '@react-navigation/native';
 import {db} from './firebase.js';
 
 
@@ -15,6 +15,8 @@ const EventList = () => {
 
 
   const [events, setEvents] = useState([]);
+  
+  const navigation = useNavigation()
   const fetchEvents = async () => {
          
     await getDocs(collection(db, "events"))
@@ -32,22 +34,31 @@ const EventList = () => {
     fetchEvents();
   }, [])
 
-  const navigation = useNavigation();
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+          <Text style={styles.headerButton}>☰</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+  // const navigation = useNavigation();
 
   const navigateToEventDetails = (event) => {
     navigation.navigate('EventDetails', { event });
   };
 
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity onPress={showLogoutAlert}>
-          <Text style={styles.headerButton}>⋮</Text>
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <TouchableOpacity onPress={showLogoutAlert}>
+  //         <Text style={styles.headerButton}>⋮</Text>
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // }, [navigation]);
 
   const showLogoutAlert = () => {
     Alert.alert(
@@ -109,6 +120,8 @@ const EventList = () => {
     />
   );
 };
+
+
 
 const styles = StyleSheet.create({
     eventList: {
