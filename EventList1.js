@@ -20,7 +20,7 @@ const EventList = () => {
     await getDocs(collection(db, "events"))
         .then((querySnapshot)=>{               
             const newData = querySnapshot.docs
-                .map((doc) => ({id:doc.data().id, charges:doc.data().charges, event_desc_images: doc.data().event_desc_images, location:doc.data().location_name , name:doc.data().name, image:doc.data().main_image, event_date_time:formatFirestoreTimestamp(doc.data().event_date_time), description:doc.data().description }));
+                .map((doc) => ({id:doc.data().id, charges:doc.data().charges, event_desc_images: doc.data().event_desc_images, location:doc.data().location_name , name:doc.data().name, image:doc.data().main_image, event_date_time:formatFirestoreTimestamp(doc.data().event_date_time), description:doc.data().description , mid_section_html: doc.data().mid_section_html, event_picture_list:doc.data().event_picture_list, mid_section_title:doc.data().mid_section_title, top_image_list:doc.data().top_image_list}));
             console.log(newData)
             setEvents(newData);                
             console.log(events, newData);

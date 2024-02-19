@@ -21,20 +21,17 @@ const EventDetails = ({ route }) => {
   const renderPreviousEventsImages = () => {
     // Assuming we have an array of previous event image URLs
     // For now, just returning placeholders
-    return [...Array(9)].map((_, index) => (
-      <View key={index} style={styles.previousEventImage} />
+    return event.event_picture_list.map((imageUrl, index) => (
+      <Image key={index} source={{ uri: imageUrl }} style={styles.previousEventImage} />
     ));
   };
-
-  const imageUrls = ["https://cdn.socio.events/spai/q_glossy+w_966+to_avif+ret_img/socio.events/wp-content/uploads/2022/10/AdobeStock_240758729-2048x1146.jpeg", 
-  "https://media.licdn.com/dms/image/C561BAQE-51J-8KkMZg/company-background_10000/0/1584559866970/eventscom_cover?e=2147483647&v=beta&t=8NsL_HPkr3nHk4ppAg8MkUoiYPUIf082mpMvySv5C7o"]
 
   const { width } = useWindowDimensions();
 
   return (
     <ScrollView style={styles.container}>
       {/* <Image source={{ uri: event.image }} style={styles.image} /> */}
-      <Carousel data={imageUrls} roundedSize={8} style={{margin:16}} />
+      <Carousel data={event.top_image_list} roundedSize={8} style={{margin:16}} />
 
       <View style={styles.detailsContainer}>
         <Text style={styles.title}>{event.name}</Text>
@@ -43,11 +40,11 @@ const EventDetails = ({ route }) => {
         <Text style={styles.price}>₹{event.charges} per person</Text>
 
         <View style={styles.reasonsContainer}>
-          <Text style={styles.sectionTitle}>Why should you join?</Text>
+          <Text style={styles.sectionTitle}>{event.mid_section_title}</Text>
           {/* {renderReasonsToAttend(["Good Weather", "Bad Weather"])} */}
           <RenderHtml
             contentWidth={width}
-            source={{html: `<p>Hello World!</p>`}}
+            source={{html: `<p>`+event.mid_section_html+`</p>`}}
           />
         </View>
 
