@@ -11,11 +11,6 @@ const EventDetails = ({ route }) => {
   const navigation = useNavigation();
 
   // Function to render the reasons to attend section
-  const renderReasonsToAttend = (reasons) => {
-    return reasons.map((reason, index) => (
-      <Text key={index} style={styles.reasonItem}>{index + 1}. {reason}</Text>
-    ));
-  };
 
   // Function to render placeholders for previous events images
   const renderPreviousEventsImages = () => {

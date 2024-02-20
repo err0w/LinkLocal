@@ -39,40 +39,17 @@ const EventList = () => {
   };
 
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity onPress={showLogoutAlert}>
-          <Text style={styles.headerButton}>⋮</Text>
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <TouchableOpacity onPress={showLogoutAlert}>
+  //         <Text style={styles.headerButton}>⋮</Text>
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // }, [navigation]);
 
-  const showLogoutAlert = () => {
-    Alert.alert(
-      "Log Out",
-      "Are you sure you want to log out?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Log Out", onPress: handleLogout }
-      ]
-    );
-  };
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('userToken');
-      // Reset the navigation state to the new ro*ute
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'PhoneNumberInputScreen' }],
-      });
-    } catch (e) {
-      // handling exception
-      console.log(e)
-    }
-  };
 
   // ... rest of your EventList component
   const renderItem = ({ item }) => {

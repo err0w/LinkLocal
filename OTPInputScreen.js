@@ -1,41 +1,29 @@
 // OTPInputScreen.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AuthContext } from './App'; // Adjust the import path as per your project structure
 
-
-const OTPInputScreen = ({ route, navigation, setIsAuthenticated }) => {
+const OTPInputScreen = ({ route, navigation }) => {
   const [otp, setOtp] = useState('');
+  const { signIn } = useContext(AuthContext); // Use AuthContext here
   const { phoneNumber, confirm } = route.params;
 
   const handleVerifyOTP = async () => {
-    // Normally, verify the OTP with your backend
-    // For now, we'll assume the OTP is always '123456'
-    try{
+    try {
       const user = await confirm.confirm(otp);
-      console.log(user)
-      await AsyncStorage.setItem('userToken',user["_tokenResponse"]["idToken"]);
-      await AsyncStorage.setItem('uid',user["user"]["uid"]);
-      setIsAuthenticated(true);
-      navigation.navigate('EventList');
-    }catch(error){
-      console.log("incorrect otp")
-      console.log(error)
+      console.log(user);
+      // Use signIn from AuthContext to update the authentication state
+      signIn({ token: user["_tokenResponse"]["idToken"] });
+      // Navigation to 'EventList' or wherever appropriate happens after sign-in
+    } catch (error) {
+      console.log("Incorrect OTP", error);
+      // Optionally, show an error message to the user
     }
-
-    // if (otp === '123456') {
-    //   await AsyncStorage.setItem('userToken', 'authenticated');
-    //   setIsAuthenticated(true);
-    //   navigation.navigate('EventList');
-    // } else {
-    //   alert('Incorrect OTP');
-    // }
   };
 
   const resendOTP = () => {
-    // Normally, you would resend the OTP here
-    // For this example, do nothing
+    // Implementation for resending OTP goes here
   };
 
   return (
@@ -46,19 +34,19 @@ const OTPInputScreen = ({ route, navigation, setIsAuthenticated }) => {
         onChangeText={setOtp}
         value={otp}
         keyboardType="number-pad"
-        maxLength={6} // OTP length
+        maxLength={6} // Adjust based on your OTP length
       />
-      <View style = {styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => handleVerifyOTP()}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleVerifyOTP}>
           <Text style={styles.buttonText}>Submit OTP</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => resendOTP()}>
+        <TouchableOpacity style={styles.button} onPress={resendOTP}>
           <Text style={styles.buttonText}>Resend OTP</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={{color: 'black', flexDirection: 'row', marginTop: 12}} onPress={() => navigation.goBack()}>
-        <MaterialCommunityIcons name='replay' size={24} color='black' /> 
-        <Text style={{margin: 2}}>Change Phone</Text>
+      <TouchableOpacity style={{ flexDirection: 'row', marginTop: 12 }} onPress={() => navigation.goBack()}>
+        <MaterialCommunityIcons name='replay' size={24} color='black' />
+        <Text style={{ margin: 2 }}>Change Phone</Text>
       </TouchableOpacity>
     </View>
   );
@@ -76,11 +64,10 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   buttonContainer: {
-    flexDirection: 'row', // align children in a row (horizontal)
-    justifyContent: 'center', // center children horizontally in the container
-    alignItems: 'center', // center children vertically in the container
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-
   container: {
     flex: 1,
     justifyContent: 'center',
