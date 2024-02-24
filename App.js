@@ -116,8 +116,7 @@ const App = () => {
 
   const authContext = useMemo(
     () => ({
-      signIn: async (data) => {
-        const token = 'dummy-auth-token'; // Simulate getting a token from a server
+      signIn: async (token) => {// Simulate getting a token from a server
         await AsyncStorage.setItem('userToken', token);
         dispatch({ type: 'SIGN_IN', token: token });
       },
@@ -125,8 +124,7 @@ const App = () => {
         await AsyncStorage.removeItem('userToken');
         dispatch({ type: 'SIGN_OUT' });
       },
-      signUp: async (data) => {
-        const token = 'dummy-auth-token'; // Simulate getting a token from a server
+      signUp: async (token) => {// Simulate getting a token from a server
         await AsyncStorage.setItem('userToken', token);
         dispatch({ type: 'SIGN_IN', token: token });
       },

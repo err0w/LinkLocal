@@ -1,16 +1,58 @@
 // EventDetails.js
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Carousel from 'react-native-carousel-banner';
 import RenderHtml from 'react-native-render-html';
 import { useWindowDimensions } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {db} from './firebase.js';
 
 const EventDetails = ({ route }) => {
   const { event } = route.params;
   const navigation = useNavigation();
+  const [attendingEvent, setAttendingEvent] = useState(false);
+  const [userPhoneNumber, setUserPhoneNumber] = useState(null);
+  const [attendButtonText, setAttendButtonText] = useState("Attend")
 
-  // Function to render the reasons to attend section
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const phoneNumber = await AsyncStorage.getItem('phone_number');
+        setUserPhoneNumber(phoneNumber);
+
+        // Assuming you have a collection called "userBookings"
+        const userBookingDoc = await db.collection("userBookings").doc(phoneNumber).get();
+
+        if (userBookingDoc.exists) {
+          const userData = userBookingDoc.data();
+          console.log(userData[event.id]);
+          if(userData[event.id]){
+            setAttendingEvent(userData[event.id]["attending"])
+            
+          }
+          console.log(attendingEvent);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+
+    };
+    fetchData();
+  },[]);
+
+  const handleAttendButton = async () => {
+
+    if(!attendingEvent){
+      const event_id = event.id
+      console.log(event_id)
+      setAttendingEvent(true)
+      db.collection("userBookings").doc(userPhoneNumber).update({[event_id]:{"attending": true}})
+      navigation.navigate('ConfirmationScreen')
+    }
+  };
+
+
 
   // Function to render placeholders for previous events images
   const renderPreviousEventsImages = () => {
@@ -57,8 +99,8 @@ const EventDetails = ({ route }) => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.attendButton} onPress={() => navigation.navigate('ConfirmationScreen')}>
-        <Text style={styles.attendButtonText}>Attend</Text>
+      <TouchableOpacity style={attendingEvent ? styles.attendButtonGray : styles.attendButton} onPress={handleAttendButton}>
+        <Text style={styles.attendButtonText}>{attendingEvent ? '✔ Invited' : 'Attend'}</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -136,6 +178,13 @@ const styles = StyleSheet.create({
   },
   attendButton: {
     backgroundColor: '#0000ff', // Blue color for the button
+    borderRadius: 4,
+    padding: 16,
+    alignItems: 'center',
+    margin: 8,
+  },
+  attendButtonGray: {
+    backgroundColor: '#979797', // Gray color for the button when attending
     borderRadius: 4,
     padding: 16,
     alignItems: 'center',
