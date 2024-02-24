@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from './App'; // Adjust the import path as per your project structure
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OTPInputScreen = ({ route, navigation }) => {
   const [otp, setOtp] = useState('');
@@ -14,7 +15,9 @@ const OTPInputScreen = ({ route, navigation }) => {
       const user = await confirm.confirm(otp);
       console.log(user);
       // Use signIn from AuthContext to update the authentication state
-      signIn({ token: user["_tokenResponse"]["idToken"] });
+      await AsyncStorage.setItem('phone_number', user["user"]["phoneNumber"]);
+      signIn(user["_tokenResponse"]["idToken"]);
+      
       // Navigation to 'EventList' or wherever appropriate happens after sign-in
     } catch (error) {
       console.log("Incorrect OTP", error);
@@ -28,7 +31,7 @@ const OTPInputScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Please enter the 4 digit OTP sent to {phoneNumber}</Text>
+      <Text>Please enter the 6 digit OTP sent to {phoneNumber}</Text>
       <TextInput
         style={styles.input}
         onChangeText={setOtp}
