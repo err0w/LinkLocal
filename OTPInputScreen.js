@@ -1,14 +1,26 @@
 // OTPInputScreen.js
-import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity , Alert} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from './App'; // Adjust the import path as per your project structure
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth, signInWithPhoneNumber, PhoneAuthProvider, signOut } from "firebase/auth";
+import {app, firebaseConfig} from './firebase.js'
 
 const OTPInputScreen = ({ route, navigation }) => {
   const [otp, setOtp] = useState('');
-  const { signIn } = useContext(AuthContext); // Use AuthContext here
-  const { phoneNumber, confirm } = route.params;
+  const { signIn } = useContext(AuthContext);
+  const [phoneNumber, setPhoneNumber] = '' 
+  const [confirm, setConfirm] = ''
+
+  useEffect(() => {
+    if (route.params && route.params.phoneNumber) {
+      setPhoneNumber(route.params.phoneNumber);
+    }
+    if (route.params && route.params.confirm) {
+      setConfirm(route.params.confirm);
+    }
+  }, [route.params])
 
   const handleVerifyOTP = async () => {
     try {
@@ -20,13 +32,28 @@ const OTPInputScreen = ({ route, navigation }) => {
       
       // Navigation to 'EventList' or wherever appropriate happens after sign-in
     } catch (error) {
-      console.log("Incorrect OTP", error);
+      console.log(error.code);
+      switch(error.code) {
+        case 'auth/invalid-verification-code':
+          Alert.alert("Invalid OTP")
+    }
       // Optionally, show an error message to the user
     }
   };
 
-  const resendOTP = () => {
-    // Implementation for resending OTP goes here
+  const resendOTP = async () => {
+    const phoneProvider = new PhoneAuthProvider();
+    const auth = getAuth(app)
+    try{
+    const confirmation = await signInWithPhoneNumber(auth,phoneNumber, recaptchaVerifier.current)
+    setConfirm(confirmation)
+    }catch(err){
+      console.log(err.code)
+      switch(err.code) {
+        case 'auth/invalid-phone-number':
+          Alert.alert("Invalid Phone Number")
+    }
+  }
   };
 
   return (

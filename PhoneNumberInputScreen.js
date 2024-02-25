@@ -1,12 +1,12 @@
 // PhoneNumberInputScreen.js
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import {app, firebaseConfig} from './firebase.js'
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
 import { getAuth, signInWithPhoneNumber, PhoneAuthProvider, signOut } from "firebase/auth";
 
 const PhoneNumberInputScreen = ({ navigation }) => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('+91');
   const [confirm, setConfirm] = useState(null);
   const recaptchaVerifier = useRef(null);
 
@@ -15,13 +15,15 @@ const PhoneNumberInputScreen = ({ navigation }) => {
     const auth = getAuth(app)
     try{
     const confirmation = await signInWithPhoneNumber(auth,phoneNumber, recaptchaVerifier.current)
-    console.log(confirmation)
     setConfirm(confirmation)
     navigation.navigate('OTPInputScreen', { phoneNumber: phoneNumber, confirm:confirmation });
     }catch(err){
-      console.log(err)
+      console.log(err.code)
+      switch(err.code) {
+        case 'auth/invalid-phone-number':
+          Alert.alert("Invalid Phone Number")
     }
-     
+  }
   };
 
 
@@ -44,13 +46,13 @@ const PhoneNumberInputScreen = ({ navigation }) => {
         style={styles.input}
         onChangeText={setPhoneNumber}
         value={phoneNumber}
-        placeholder="+91"
+        placeHolder="+91"
+        placeholderTextColor="#000" 
         keyboardType="phone-pad"
       />
       <TouchableOpacity style={styles.button} onPress={() => handleGetOTP()}>
           <Text style={styles.buttonText}>Submit OTP</Text>
       </TouchableOpacity>
-      {/* <Button title="Get OTP" onPress={handleGetOTP} /> */}
       <View style={styles.links}>
         <Text style={styles.linkText}>Privacy Policy</Text>
         <Text style={styles.linkText}>Terms of Use</Text>
