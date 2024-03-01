@@ -10,6 +10,8 @@ const PhoneNumberInputScreen = ({ navigation }) => {
   const [confirm, setConfirm] = useState(null);
   const recaptchaVerifier = useRef(null);
 
+  
+
   const handleGetOTP = async () => {
     const phoneProvider = new PhoneAuthProvider();
     const auth = getAuth(app)
