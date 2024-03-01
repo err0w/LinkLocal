@@ -10,8 +10,8 @@ import {app, firebaseConfig} from './firebase.js'
 const OTPInputScreen = ({ route, navigation }) => {
   const [otp, setOtp] = useState('');
   const { signIn } = useContext(AuthContext);
-  const [phoneNumber, setPhoneNumber] = '' 
-  const [confirm, setConfirm] = ''
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [confirm, setConfirm] = useState('')
 
   useEffect(() => {
     if (route.params && route.params.phoneNumber) {
